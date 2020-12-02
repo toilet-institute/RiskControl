@@ -1,0 +1,49 @@
+package com.jxlt.udic.riskcontrol.website.util;
+
+import org.springframework.util.StringUtils;
+
+/**
+ * jwt工具类
+ * @author NCPLT-2020
+ *
+ */
+public class JwtUtils {
+    private static final String AUTHORIZATION_HEADER_PREFIX = "Wx";
+
+    /**
+     * 获取原始令牌
+     * remove 'Wx' string
+     *
+     * @param authorizationHeader
+     * @return
+     */
+    public static String getRawToken(String authorizationHeader) {
+        return authorizationHeader.substring(AUTHORIZATION_HEADER_PREFIX.length());
+    }
+
+    /**
+     * 获取令牌头
+     * @param rawToken
+     * @return
+     */
+    public static String getTokenHeader(String rawToken) {
+        return AUTHORIZATION_HEADER_PREFIX + rawToken;
+    }
+
+    /**
+     * 验证授权请求头
+     * @param authorizationHeader
+     * @return
+     */
+    public static boolean validate(String authorizationHeader) {
+        return StringUtils.hasText(authorizationHeader) && authorizationHeader.startsWith(AUTHORIZATION_HEADER_PREFIX);
+    }
+
+    /**
+     * 获取授权头前缀
+     * @return
+     */
+    public static String getAuthorizationHeaderPrefix() {
+        return AUTHORIZATION_HEADER_PREFIX;
+    }
+}

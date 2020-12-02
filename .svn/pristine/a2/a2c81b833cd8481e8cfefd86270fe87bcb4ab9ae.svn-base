@@ -1,0 +1,475 @@
+package com.jxlt.udic.riskcontrol.website.controller;
+
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.jxlt.udic.riskcontrol.website.model.*;
+import com.jxlt.udic.riskcontrol.website.service.*;
+import io.swagger.models.auth.In;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import sun.misc.BASE64Encoder;
+
+import java.io.IOException;
+import java.util.Base64;
+import java.util.Date;
+import java.util.List;
+
+/**
+ * @author: ajax
+ * @create: 2020-09-30 15:56
+ **/
+@Slf4j
+@RestController
+@RequestMapping(value = "/riskTarget")
+public class RiskTargetController {
+
+    @Autowired
+    private GroupRiskControlService groupRiskControlService;
+
+    @Autowired
+    private GroupRiskTargetService groupRiskTargetService;
+
+    @Autowired
+    private ImportDomainService importDomainService;
+
+    @Autowired
+    private ProvRiskControlService provRiskControlService;
+
+    @Autowired
+    private ProvRiskTargetService provRiskTargetService;
+
+    @Autowired
+    private  FileService fileService;
+
+    @Autowired
+    private  TargetFileService targetFileService;
+
+    public static final String basePath="/root/zt/files";
+
+/*-----------------------------------------------------------重点领域管理---------------------------------------------*/
+
+//    获取集团重点领域信息
+    @RequestMapping(value = "/getDomainList",method = RequestMethod.GET)
+    public String getDomainList(@RequestParam String sort){
+        JSONObject result = new JSONObject();
+        try{
+            List<ImportDomain> importDomains= importDomainService.selectAll();
+            JSONArray array= JSONArray.parseArray(JSON.toJSONString(importDomains));
+            result.put("status",2000);
+            result.put("msg","成功");
+            result.put("data",array);
+            return result.toJSONString();
+        }catch (Exception e){
+            result.put("status",1000);
+            result.put("msg","失败");
+            return result.toJSONString();
+        }
+
+    }
+
+//    集团重点领域信息查询
+    @RequestMapping(value = "/queryDomainList",method = RequestMethod.GET)
+    public String queryDomainList(@RequestParam int pageNum,@RequestParam int pageSize,@RequestParam String data){
+        List<ImportDomain> importDomains =importDomainService.queryImportDomainBySql(pageNum,pageSize);
+        JSONArray array= JSONArray.parseArray(JSON.toJSONString(importDomains));
+        JSONObject result = new JSONObject();
+        result.put("status",2000);
+        result.put("msg","成功");
+        result.put("data",array);
+        return result.toJSONString();
+    }
+
+//    集团重点领域新增
+    @RequestMapping(value = "/addDomain",method = RequestMethod.POST)
+    public String addDomain(@RequestParam String domain,@RequestParam String remark,@RequestParam int orderId,@RequestParam int state){
+        ImportDomain importDomain=new ImportDomain(domain,remark,orderId,new Date(),"1",state);
+        importDomainService.insertSelective(importDomain);
+        JSONObject  result = new JSONObject();
+        result.put("status",2000);
+        result.put("msg","插入成功");
+        return result.toJSONString();
+    }
+
+//    集团重点领域信息修改
+    @RequestMapping(value = "/modDomain",method = RequestMethod.POST)
+    public String modDomain(@RequestParam Integer id, @RequestParam String domain, @RequestParam String remark, @RequestParam int orderId, @RequestParam int state) {
+        JSONObject  result = new JSONObject();
+        try {
+            importDomainService.updateByPrimaryKey(new ImportDomain(id,domain,remark,orderId,new Date(),"1",state));
+            result.put("status",2000);
+            result.put("msg","修改成功");
+            return result.toJSONString();
+        }catch (Exception e){
+            result.put("status",1000);
+            result.put("msg","修改失败");
+            return result.toJSONString();
+        }
+
+
+    }
+
+//    集团重点领域信息删除（批量）
+    @RequestMapping(value = "dropDomain",method = RequestMethod.POST)
+    public String dropDomain(@RequestParam String id){
+        JSONObject  result = new JSONObject();
+        try {
+            int target=importDomainService.deleteByPrimaryKey(id);
+            result.put("status",2000);
+            result.put("msg","删除成功");
+            return result.toJSONString();
+        }catch (Exception e){
+            result.put("status",1000);
+            result.put("msg","修改失败");
+            return result.toJSONString();
+        }
+    }
+
+//    集团重点领域文件上传
+    @RequestMapping(value = "uploadDomainFile")
+    public String uploadDomainFile(){
+        return "uploadDomainFile";
+    }
+
+    /*-------------------------------------------------集团指引手册---------------------------------------------------------*/
+
+
+
+
+//    获取集团廉洁风险点
+    @RequestMapping(value = "/getGroupTargetList",method = RequestMethod.POST)
+    public String getGroupTargetList(@RequestParam String sort){
+        JSONObject result = new JSONObject();
+        try{
+            List<GroupRiskTarget> groupRiskTargets= groupRiskTargetService.selectAll();
+            JSONArray array= JSONArray.parseArray(JSON.toJSONString(groupRiskTargets));
+            result.put("status",2000);
+            result.put("msg","成功");
+            result.put("data",array);
+            return result.toJSONString();
+        }catch (Exception e){
+            result.put("status",1000);
+            result.put("msg","失败");
+            return result.toJSONString();
+        }
+    }
+
+//    集团廉洁风险点防控措施指引信息查询
+    @RequestMapping(value = "/queryGroupControlList",method = RequestMethod.POST)
+    public String queryGroupControlList(@RequestParam int pageNum,@RequestParam int pageSize,@RequestParam JSON data){
+        List<GroupRiskControl> groupRiskControls =groupRiskControlService.queryGroupRiskControlBySql(pageNum,pageSize);
+        JSONArray array= JSONArray.parseArray(JSON.toJSONString(groupRiskControls));
+        JSONObject result = new JSONObject();
+        result.put("status",2000);
+        result.put("msg","成功");
+        result.put("data",array);
+        return result.toJSONString();
+    }
+//    集团廉洁风险点新增
+    @RequestMapping(value = "/addGroupTarget")
+    public String addGroupTarget(@RequestParam int domainId,@RequestParam String items,@RequestParam String flows,@RequestParam String links,@RequestParam String targets,@RequestParam int type,@RequestParam String ranges,@RequestParam String respDeptCode,@RequestParam int state){
+        JSONObject result = new JSONObject();
+        try{
+            GroupRiskTarget groupRiskTarget=new GroupRiskTarget(domainId,items,flows,links,targets,type,ranges,respDeptCode,new Date(),1,1);
+            groupRiskTargetService.insertSelective(groupRiskTarget);
+            result.put("status",2000);
+            result.put("msg","新增成功");
+            return result.toJSONString();
+        }catch (Exception e){
+            result.put("status",1000);
+            result.put("msg","新增失败");
+            return result.toJSONString();
+        }
+    }
+//    集团廉洁风险点信息修改
+    @RequestMapping(value = "/modiGroupTarget",method = RequestMethod.PUT)
+    public String modiGroupTarget(@RequestParam int id,@RequestParam int domainId,@RequestParam String items,@RequestParam String flows,@RequestParam String links,@RequestParam String targets,@RequestParam int type,@RequestParam String ranges,@RequestParam String respDeptCode,@RequestParam int state){
+        GroupRiskTarget groupRiskTarget=new GroupRiskTarget(id,domainId,items,flows,links,targets,type,ranges,respDeptCode,new Date(),1,1);
+        JSONObject result=new JSONObject();
+        try{
+            int target=groupRiskTargetService.updateByPrimaryKey(groupRiskTarget);
+            result.put("status",2000);
+            result.put("msg","更新成功");
+            return result.toJSONString();
+        }catch (Exception e){
+            result.put("status",1000);
+            result.put("msg","更新失败");
+            return result.toJSONString();
+        }
+    }
+//    集团廉洁风险点信息删除（批量）
+    @RequestMapping(value = "/dropGroupTarget",method = RequestMethod.DELETE)
+    public String dropGroupTarget(@RequestParam String id){
+        JSONObject  result = new JSONObject();
+        try {
+            int target=groupRiskTargetService.deleteByPrimaryKey(id);
+            result.put("status",2000);
+            result.put("msg","删除成功");
+            return result.toJSONString();
+        }catch (Exception e){
+            result.put("status",1000);
+            result.put("msg","修改失败");
+            return result.toJSONString();
+        }
+    }
+
+//    集团廉洁风险点文件上传
+    @RequestMapping(value = "/uploadGroupFile")
+    public String uploadGroupFile(){
+        return "uploadGroupFile";
+    }
+
+//    廉洁风险点流程图上传
+    @RequestMapping(value = "uploadFlowImage")
+    public String uploadFlowImage(){
+        return "廉洁风险点流程图上传";
+    }
+
+//    集团廉洁风险点防控措施新增
+    @RequestMapping(value = "/addGroupControl",method = RequestMethod.POST)
+    public String addGroupControl(@RequestParam int targetId,@RequestParam String remark,@RequestParam int orderId,@RequestParam int state){
+        JSONObject result=new JSONObject();
+        try{
+            GroupRiskControl groupRiskControl=new GroupRiskControl();
+            groupRiskControl.setTargetid(targetId);
+            groupRiskControl.setRemark(remark);
+            groupRiskControl.setOrderid(orderId);
+            groupRiskControl.setState(state);
+            groupRiskControlService.insertSelective(groupRiskControl);
+            result.put("status",2000);
+            result.put("msg","删除成功");
+            return result.toJSONString();
+        }catch (Exception e){
+            result.put("status",1000);
+            result.put("msg","修改失败");
+            return result.toJSONString();
+        }
+
+    }
+//    集团廉洁风险点防控措施信息修改
+    @RequestMapping(value = "/modGroupControl",method = RequestMethod.PUT)
+    public String modGroupControl(@RequestParam int id,@RequestParam int targetId,@RequestParam String remark,@RequestParam int orderId,@RequestParam int state){
+        JSONObject result=new JSONObject();
+        try{
+            GroupRiskControl groupRiskControl=new GroupRiskControl();
+            groupRiskControl.setId(id);
+            groupRiskControl.setTargetid(targetId);
+            groupRiskControl.setRemark(remark);
+            groupRiskControl.setOrderid(orderId);
+            groupRiskControl.setState(state);
+            groupRiskControlService.updateByPrimaryKey(groupRiskControl);
+            result.put("status",2000);
+            result.put("msg","删除成功");
+            return result.toJSONString();
+        }catch (Exception e){
+            result.put("status",1000);
+            result.put("msg","修改失败");
+            return result.toJSONString();
+        }
+    }
+//    集团廉洁风险点防控措施信息删除（批量）
+    @RequestMapping(value = "/dropGroupControl",method = RequestMethod.DELETE)
+    public String dropGroupControl(@RequestParam String id){
+        JSONObject  result = new JSONObject();
+        try {
+            int target=groupRiskControlService.deleteByPrimaryKey(id);
+            result.put("status",2000);
+            result.put("msg","删除成功");
+            return result.toJSONString();
+        }catch (Exception e){
+            result.put("status",1000);
+            result.put("msg","修改失败");
+            return result.toJSONString();
+        }
+    }
+    /*-------------------------------------------------省分风险防控-----------------------------------------------------*/
+
+//    省分廉洁风险点信息查询
+    @RequestMapping(value = "/queryProvTarget",method = RequestMethod.POST)
+    public String queryProvTarget(@RequestBody JSONObject data){
+        JSONObject result=new JSONObject();
+        try{
+            int pageNum=data.getInteger("pageNum");
+            int pageSize=data.getInteger("pageSize");
+            JSONObject currentData= data.getJSONObject("data");
+            String deptCode=currentData.getString("deptCode");
+            String orgCode=currentData.getString("orgCode");
+            String sort=currentData.getString("sort");
+            List<ProvRiskTarget> provRiskTargets=provRiskTargetService.queryProvRiskTargetBySql(pageNum,pageSize,deptCode,orgCode,sort);
+            JSONArray array= JSONArray.parseArray(JSON.toJSONString(provRiskTargets));
+            result.put("status",2000);
+            result.put("msg","成功");
+            result.put("total",provRiskTargets.size());
+            result.put("list",array);
+            return result.toJSONString();
+        }catch (Exception e){
+            result.put("status",1000);
+            result.put("msg","字段解析出错");
+            return result.toJSONString();
+        }
+    }
+
+
+
+//    省分廉洁风险点新增
+    @RequestMapping(value = "/addProvTarget",method = RequestMethod.POST)
+    public String addProvTarget(@RequestBody JSONObject data){
+        JSONObject result=new JSONObject();
+        try{
+
+            int domainId=data.getInteger("domainId");
+            String items=data.getString("items");
+            String flows=data.getString("flows");
+            String links=data.getString("targets");
+            String type=data.getString("type");
+            String respCode=data.getString("respCode");
+            String deptCode=data.getString("deptCode");
+            String orgCode=data.getString("orgCode");
+            int state= data.getInteger("state");
+            ProvRiskTarget provRiskTarget=new ProvRiskTarget();
+            provRiskTarget.setDomainid(domainId);
+            provRiskTarget.setFlows(flows);
+            provRiskTarget.setItems(items);
+            provRiskTarget.setLinks(links);
+            provRiskTarget.setType(type);
+            provRiskTarget.setRespcode(respCode);
+            provRiskTarget.setDeptcode(deptCode);
+            provRiskTarget.setOrgcode(orgCode);
+            provRiskTarget.setState(state);
+            provRiskTarget.setOperator(1);
+            provRiskTargetService.insertSelective(provRiskTarget);
+            result.put("status",2000);
+            result.put("msg","成功");
+            return result.toJSONString();
+        }catch (Exception e){
+            result.put("status",1000);
+            result.put("msg","失败");
+            return result.toJSONString();
+        }
+    }
+//    省分廉洁风险点信息修改
+    @RequestMapping(value = "/modGroupTarget",method = RequestMethod.PUT)
+    public String modGroupTarget(@RequestBody JSONObject data){
+        JSONObject result = new JSONObject();
+        try{
+            int id=data.getInteger("id");
+            int domainId=data.getInteger("domainId");
+            String items=data.getString("items");
+            String flows=data.getString("flows");
+            String links=data.getString("targets");
+            String type=data.getString("type");
+            String respCode=data.getString("respCode");
+            String deptCode=data.getString("deptCode");
+            String orgCode=data.getString("orgCode");
+            int state= data.getInteger("state");
+            ProvRiskTarget provRiskTarget=new ProvRiskTarget();
+            provRiskTarget.setId(id);
+            provRiskTarget.setDomainid(domainId);
+            provRiskTarget.setFlows(flows);
+            provRiskTarget.setItems(items);
+            provRiskTarget.setLinks(links);
+            provRiskTarget.setType(type);
+            provRiskTarget.setRespcode(respCode);
+            provRiskTarget.setDeptcode(deptCode);
+            provRiskTarget.setOrgcode(orgCode);
+            provRiskTarget.setState(state);
+            provRiskTarget.setOperator(1);
+            provRiskTargetService.updateByPrimaryKey(provRiskTarget);
+            result.put("status",2000);
+            result.put("msg","成功");
+            return result.toJSONString();
+        }catch (Exception e){
+            result.put("status",1000);
+            result.put("msg","修改失败");
+            return result.toJSONString();
+        }
+    }
+//    省分廉洁风险点信息删除（批量）
+    @RequestMapping(value = "/dropProvTarget",method = RequestMethod.DELETE)
+    public String dropProvTarget(@RequestBody JSONObject data){
+        JSONObject result=new JSONObject();
+        try{
+            int id =data.getInteger("id");
+            provRiskTargetService.deleteByPrimaryKey(id);
+            result.put("status",2000);
+            result.put("msg","成功");
+            return result.toJSONString();
+        }catch (Exception e){
+            result.put("status",1000);
+            result.put("msg","失败");
+            return result.toJSONString();
+        }
+    }
+
+//    省分廉洁风险点文件上传
+    @RequestMapping(value = "/uploadProvFile")
+    public String uploadProvFile(@RequestParam("file") MultipartFile uploadFile,@RequestParam String target_id) throws IOException {
+
+        java.io.File file = new java.io.File(basePath, uploadFile.getOriginalFilename());
+        File file1=new File();
+        System.out.println(file.getAbsolutePath());
+        file1.setExName(uploadFile.getOriginalFilename());
+        String fileId=Long.toString(System.currentTimeMillis());
+        file1.setFileId(fileId);
+        file1.setVisitUrl(file.getAbsolutePath());
+        uploadFile.transferTo(file);
+        TargetFile targetFile=new TargetFile(target_id,fileId);
+        targetFileService.insertSelective(targetFile);
+        fileService.insertSelective(file1);
+        JSONObject result = new JSONObject();
+        result.put("status",2000);
+        result.put("msg","成功");
+        result.put("url", "/common/files?fileId="+fileId);
+        return result.toJSONString();
+    }
+//    省分廉洁风险点防控措施查询
+    @RequestMapping(value = "/queryProvControl",method = RequestMethod.GET)
+    public String queryProvControl(@RequestBody JSONObject data){
+        int pageNum=data.getInteger("pageNum");
+        return "省分廉洁风险点防控措施查询";
+    }
+//    省分廉洁风险点防控措施新增
+    @RequestMapping(value = "/addProvControl")
+    public String addProvControl(){
+        return "省分廉洁风险点防控措施新增";
+    }
+//    添加省分廉洁风险点防控措施
+    @RequestMapping(value = "/modProvControl")
+    public String modProvControl(){
+        return "添加省分廉洁风险点防控措施";
+    }
+
+//    省分廉洁风险点防控措施信息删除（批量）
+    @RequestMapping(value = "/dropProvControl")
+    public String dropProvControl(){
+        return "省分廉洁风险点防控措施信息删除（批量）";
+    }
+//    省分廉洁风险点发布审批流程查询
+    @RequestMapping(value = "/queryProvTargetPressFlow")
+    public String queryProvTargetPressFlow(){
+        return "省分廉洁风险点发布审批流程查询";
+    }
+
+/*---------------------------------------------------------------发布审批----------------------------------------------------*/
+//    审批待办事项查询
+    @RequestMapping(value = "/queryProvTargetPressFlowApprove")
+    public String queryProvTargetPressFlowApprove(){
+        return "审批待办事项查询";
+    }
+
+//    审批结果提交
+    @RequestMapping(value = "/addProvTargetPressFlow")
+    public String addProvTargetPressFlow(){
+        return "审批结果提交";
+    }
+
+//    获取流程节点标题
+    @RequestMapping(value = "/getFlowStepTitle")
+    public String getFlowStepTitle(){
+        return "获取流程节点标题";
+    }
+
+}

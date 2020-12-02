@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jxlt.udic.riskcontrol.website.persistance.mapper.GroupRiskTargetMapper">
+    <resultMap id="grtInfoMap" type="com.jxlt.udic.riskcontrol.website.model.GroupRiskTarget">
+        <id  column="id" property="id"/>
+        <result column="DOMAINID" property="domainid"/>
+        <result column="ITEMS" property="items"/>
+        <result column="FLOWS" property="flows"/>
+        <result column="LINKS" property="links"/>
+        <result column="TARGETS" property="targets"/>
+        <result column="TYPE" property="type"/>
+        <result column="RANGES" property="ranges"/>
+        <result column="RESPDEPTCODE" property="respdeptcode"/>
+        <result column="CREATETIME" property="createtime"/>
+        <result column="OPERATOR" property="operator"/>
+        <result column="STATE" property="state"/>
+    </resultMap>
+
+
+    <select id="queryGroupRiskTargetBySql" resultMap="grtInfoMap" parameterType="map">
+        select
+        *
+        from dic_group_risk_target limit #{currIndex} , #{pageSize}
+    </select>
+</mapper>

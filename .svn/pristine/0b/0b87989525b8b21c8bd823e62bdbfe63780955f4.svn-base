@@ -1,0 +1,43 @@
+package com.jxlt.udic.riskcontrol.website.service;
+
+import com.jxlt.udic.riskcontrol.website.model.ProvRiskTarget;
+import com.jxlt.udic.riskcontrol.website.persistance.common.CommonMapper;
+import com.jxlt.udic.riskcontrol.website.persistance.mapper.ProvRiskTargetMapper;
+import com.jxlt.udic.riskcontrol.website.service.common.AbstractCommonService;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.map.HashedMap;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * ProvRiskTargetService
+ *
+ * @author zhout26
+ * @version 1.0
+ * 2020/10/9 11:17
+ **/
+@Service
+@Slf4j
+public class ProvRiskTargetService extends AbstractCommonService<ProvRiskTarget> {
+
+    @Resource
+    private ProvRiskTargetMapper provRiskTargetMapper;
+
+    @Override
+    public CommonMapper<ProvRiskTarget> getMapper() {
+        return this.provRiskTargetMapper;
+    }
+
+    public List<ProvRiskTarget> queryProvRiskTargetBySql(int currPage,int pageSize,String deptCode,String orgCode,String sort){
+        Map<String, Object> data = new HashedMap();
+        data.put("currPage", (currPage-1)*pageSize);
+        data.put("pageSize", pageSize);
+        data.put("deptCode", deptCode);
+        data.put("orgCode", orgCode);
+        return provRiskTargetMapper.queryProvRiskTargetBySql(data);
+    }
+}
+

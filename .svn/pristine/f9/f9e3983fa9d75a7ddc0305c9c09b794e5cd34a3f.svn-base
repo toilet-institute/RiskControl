@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jxlt.udic.riskcontrol.website.persistance.mapper.ProvRiskControlMapper">
+    <resultMap id="prcInfoMap" type="com.jxlt.udic.riskcontrol.website.model.ProvRiskControl">
+        <id  column="id" property="id"/>
+        <result column="TARGETID" property="targetid"/>
+        <result column="REAMRK" property="remark"/>
+        <result column="ORDERID" property="orderid"/>
+        <result column="RESPCODE" property="respcode"/>
+        <result column="DEPTCODE" property="deptcode"/>
+        <result column="ORGCODE" property="orgcode"/>
+        <result column="CREATETIME" property="createtime"/>
+        <result column="OPERATOR" property="operator"/>
+        <result column="STATE" property="state"/>
+    </resultMap>
+</mapper>

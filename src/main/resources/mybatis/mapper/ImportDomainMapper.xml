@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jxlt.udic.riskcontrol.website.persistance.mapper.ImportDomainMapper">
+    <resultMap id="idInfoMap" type="com.jxlt.udic.riskcontrol.website.model.ImportDomain">
+        <id  column="id" property="id"/>
+        <result column="DOMAIN" property="domain"/>
+        <result column="REAMRK" property="remark"/>
+        <result column="ORDERID" property="orderid"/>
+        <result column="CREATETIME" property="createtime"/>
+        <result column="OPERATOR" property="operator"/>
+        <result column="STATE" property="state"/>
+    </resultMap>
+
+
+    <select id="queryImportDomainBySql" resultMap="idInfoMap" parameterType="map">
+        select
+        *
+        from dic_group_important_domain limit #{currIndex} , #{pageSize}
+    </select>
+</mapper>

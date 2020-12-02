@@ -1,0 +1,18 @@
+package com.jxlt.udic.riskcontrol.website.persistance.mapper;
+
+import com.jxlt.udic.riskcontrol.website.model.ProvRiskTarget;
+import com.jxlt.udic.riskcontrol.website.persistance.common.CommonMapper;
+
+import java.util.List;
+import java.util.Map;
+
+/**
+ * ProvRiskTargetMapper
+ *
+ * @author zhout26
+ * @version 1.0
+ * 2020/10/9 11:11
+ **/
+public interface ProvRiskTargetMapper extends CommonMapper<ProvRiskTarget> {
+     List<ProvRiskTarget> queryProvRiskTargetBySql(Map<String,Object> data);
+}
