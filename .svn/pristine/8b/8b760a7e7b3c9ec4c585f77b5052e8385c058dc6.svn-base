@@ -1,0 +1,108 @@
+package com.jxlt.udic.riskcontrol.website.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.context.request.async.DeferredResult;
+import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.Contact;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
+/**
+ * SwaggerConfig
+ */
+@Configuration
+@EnableSwagger2
+public class SwaggerConfig {
+	/**
+	 * SpringBoot默认已经将classpath:/META-INF/resources/和classpath:/META-INF/resources/webjars/映射
+	 * 所以该方法不需要重写，如果在SpringMVC中，可能需要重写定义（我没有尝试） 重写该方法需要 extends
+	 * WebMvcConfigurerAdapter
+	 * 
+	 */
+	
+	@Bean
+	public Docket createRestApi() {
+		return new Docket(DocumentationType.SWAGGER_2).groupName("webapi")
+				.genericModelSubstitutes(DeferredResult.class)
+				.apiInfo(apiInfo())
+				.select()
+				// 为当前包路径
+				.apis(RequestHandlerSelectors.basePackage("com.jxlt.udic.riskcontrol.webapi"))
+				.paths(PathSelectors.any())
+				// .paths(or(regex("/api/.*")))// 过滤的接口
+				.build();
+	}
+
+	// 构建 api文档的详细信息函数,注意这里的注解引用的是哪个
+	private ApiInfo apiInfo() {
+		return new ApiInfoBuilder()
+				// 页面标题
+				.title("中国联通江西省分公司廉洁风险防控管理平台接口")
+				// 创建人
+				.contact(new Contact("UDICEAPI", "http://134.224.56.29/", ""))
+				// 版本号
+				.version("1.0")
+				// 描述
+				.description("平台接口")
+				.build();
+	}
+
+	@Bean
+	public Docket createTransApi() {
+		return new Docket(DocumentationType.SWAGGER_2)
+				.groupName("interface")
+				.genericModelSubstitutes(DeferredResult.class)
+				.apiInfo(apiInfo())
+				.select()
+				// 为当前包路径
+				.apis(RequestHandlerSelectors.basePackage("com.jxlt.udic.riskcontrol.website"))
+				.paths(PathSelectors.any())// 过滤的接口
+				.build()
+				.apiInfo(tranInfo());
+	}
+
+	private ApiInfo tranInfo() {
+		return new ApiInfoBuilder()
+				// 页面标题
+				.title("中国联通江西省分公司廉洁风险防控管理平台")
+				// 创建人
+				.contact(new Contact("UDICHOME", "http://134.224.56.29/", ""))
+				// 版本号
+				.version("1.0")
+				// 描述
+				.description("平台管理")
+				.build();
+	}
+
+	@Bean
+	public Docket createSwagger2WordApi() {
+		return new Docket(DocumentationType.SWAGGER_2)
+				.groupName("swagger2")
+				.genericModelSubstitutes(DeferredResult.class)
+				.apiInfo(apiInfo())
+				.select()
+				// 为当前包路径
+				.apis(RequestHandlerSelectors.basePackage("com.jxlt.udic.riskcontrol.swagger2"))
+				.paths(PathSelectors.any())// 过滤的接口
+				.build()
+				.apiInfo(swagger2Info());
+	}
+
+	private ApiInfo swagger2Info() {
+		return new ApiInfoBuilder()
+				// 页面标题
+				.title("中国联通江西省分公司廉洁风险防控管理平台接口调用")
+				// 创建人
+				.contact(new Contact("UDICWORD", "http://134.224.56.29/", ""))
+				// 版本号
+				.version("1.0")
+				// 描述
+				.description("API 描述")
+				.build();
+	}
+}

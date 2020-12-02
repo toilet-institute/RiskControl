@@ -1,0 +1,120 @@
+#版本号
+version: 1.0.0
+
+server:
+  servlet:
+    context-path: /udic
+  port: 8088
+#  ssl:
+#    key-store: classpath:server.keystore
+#    key-password: 12345678
+#    key-store-type: JKS
+#    key-alias:  server_cert
+
+#jndi数据源开关
+use-jndi: false
+
+spring:
+  servlet:
+    multipart:
+      maxFileSize: 5MB
+      maxRequestSize: 100MB
+  cache:
+      caffeine:
+        spec: initialCapacity=50,maximumSize=500,expireAfterWrite=36000s
+  datasource:
+    jndi-name: riskdb2
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://134.224.56.29:13306/riskcontrol?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true
+    username: riskdb
+    password: Jxlt_2020.
+    driver-class-name: com.mysql.jdbc.Driver
+   
+    
+    #druid连接池参数
+    initialSize: 1
+    minIdle: 5 
+    maxActive: 200
+    maxWait: 60000  
+    validationQuery: SELECT 1 FROM DUAL  
+    testOnBorrow: false  
+    testOnReturn: false  
+    testWhileIdle: true  
+    minEvictableIdleTimeMillis: 25200000  
+    timeBetweenEvictionRunsMillis: 60000  
+    removeAbandoned: true  
+    removeAbandonedTimeout: 1800  
+    poolPreparedStatements: true  
+    maxPoolPreparedStatementPerConnectionSize: 20  
+    logAbandoned: true  
+    filters: stat,wall,log4j   
+  resources:
+    static-locations:
+    - classpath:static/dist/
+  
+mybatis:
+  mapper-locations: classpath*:mybatis/mapper/*.xml
+  type-aliases-package: com.jxlt.udic.website.model
+  base-mapper-package: com.jxlt.udic.website.persistance.mapper
+  type-handlers-package: com.jxlt.udic.website.config.handler
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  params: count=countSql
+  
+#log
+logging:
+  config: classpath:logback.xml
+  level: 
+    com.wxapp.ncplt : info
+
+#登录错误锁定次数
+#登录错误锁定时间，暂时按照分钟数填写
+loginerror:
+  locknum: 5
+  locktime: 60
+
+connectsetting:
+  time: 30
+  readtime: 30    
+
+#临时session用户开关
+use-temp-session-user: false
+#登陆是否验证码过滤
+is-validate-code: true
+#请求允许放行的uri
+allowed-uris: /ssoLogin, /adminLogin, /logout
+#登录后所有的url
+url-permission:
+  enable: true
+  allowed-uris: /sysManage
+
+#定时任务开关，目前所有定时统一用一个开关，后续有需要再拆分
+use-timer: true
+
+#日志表（目前3张）的留存限制天数，为0代表无限期
+logtable-exist-limit-days: 180
+
+#接口的resultdata表迁移配置
+#数据留存限制天数, 为0代表无限期，超过天数的数据会转移到历史表
+resultdata-exist-limit-days: 180
+#数据迁移每次执行最大的操作数量
+resultdata-move-max-one-time: 1000
+
+#ftp config
+ftp.config:
+  enabled: false
+  host: 134.224.56.29
+  port: 21
+  dir: /ftphome
+  username: admin
+  password: admin
+
+#同步开关
+syncConfing:
+  use-Synchronize: false

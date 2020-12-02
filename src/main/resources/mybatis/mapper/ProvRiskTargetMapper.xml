@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jxlt.udic.riskcontrol.website.persistance.mapper.ProvRiskTargetMapper">
+    <resultMap id="prtInfoMap" type="com.jxlt.udic.riskcontrol.website.model.ProvRiskTarget">
+        <id  column="ID" property="id"/>
+        <result column="DOMAINID" property="domainid"/>
+        <result column="ITEMS" property="items"/>
+        <result column="FLOWS" property="flows"/>
+        <result column="LINKS" property="links"/>
+        <result column="TARGETS" property="targets"/>
+        <result column="TYPE" property="type"/>
+        <result column="RESPCODE" property="respcode"/>
+        <result column="DEPTCODE" property="deptcode"/>
+        <result column="ORGCODE" property="orgcode"/>
+        <result column="OPERATOR" property="operator"/>
+        <result column="STATE" property="state"/>
+    </resultMap>
+
+    <resultMap id="prtInfoMap2" type="com.jxlt.udic.riskcontrol.website.model.datachange.ProvRiskTo">
+        <id  column="ID" property="id"/>
+        <result column="DOMAINID" property="domainid"/>
+        <result column="REMARK" property="remark"/>
+        <result column="ITEMS" property="items"/>
+        <result column="FLOWS" property="flows"/>
+        <result column="LINKS" property="links"/>
+        <result column="TARGETS" property="targets"/>
+        <result column="TYPE" property="type"/>
+        <result column="RESPCODE" property="respcode"/>
+        <result column="DEPTCODE" property="deptcode"/>
+        <result column="ORGCODE" property="orgcode"/>
+        <result column="OPERATOR" property="operator"/>
+        <result column="STATE" property="state"/>
+    </resultMap>
+
+    <resultMap id="prtInfoMap3" type="com.jxlt.udic.riskcontrol.website.model.datachange.ProvRiskStatic">
+
+        <result column="domains" property="domains"/>
+        <result column="orGs" property="orGs"/>
+        <result column="orgDs" property="orgDs"/>
+    </resultMap>
+
+    <select id="queryProvRiskTargetBySql" resultMap="prtInfoMap2" parameterType="map">
+        select a.id,a.domainid,b.remark,a.items,a.flows,a.links,a.targets,a.type,a.respcode,a.deptcode,a.orgcode
+        from dic_prov_risk_target a
+        join dic_group_important_domain b on a.domainid=b.id
+        where deptcode in
+        <foreach collection="deptCodes" item = "deptCode" open="(" separator="," close=")" index="index">
+            #{deptCode}
+        </foreach>
+        and orgcode in
+        <foreach collection="orgCodes" item = "orgCode" open="(" separator="," close=")" index="index">
+            #{orgCode}
+        </foreach>
+        limit #{currPage} , #{pageSize}
+    </select>
+
+    <select id="queryProvTargetByName" resultMap="prtInfoMap2" parameterType="map">
+        select a.id,a.domainid,b.remark,a.items,a.flows,a.links,a.targets,a.type,a.respcode,a.deptcode,a.orgcode
+        from dic_prov_risk_target a
+        join dic_group_important_domain b on a.domainid=b.id
+        where a.targets like concat('%',#{targets},'%')
+    </select>
+
+    <select id="queryProvRiskTargetAllBySql" resultMap="prtInfoMap2" parameterType="map">
+        select a.id,a.domainid,b.remark,a.items,a.flows,a.links,a.targets,a.type,a.respcode,a.deptcode,a.orgcode
+        from dic_prov_risk_target a
+        join dic_group_important_domain b on a.domainid=b.id  limit #{currPage} , #{pageSize}
+    </select>
+
+    <select id="queryProvRiskTargetByName" resultMap="prtInfoMap2" parameterType="map">
+        select a.id,a.domainid,b.remark,a.items,a.flows,a.links,a.targets,a.type,a.respcode,a.deptcode,a.orgcode
+        from dic_prov_risk_target a
+        join dic_group_important_domain b on a.domainid=b.id
+        where deptcode=#{deptCode} and orgcode=#{orgCode} limit #{currPage} , #{pageSize}
+    </select>
+
+    <select id="queryProvRiskTargetCountBySql" resultMap="prtInfoMap3" parameterType="map">
+        select
+        sum(case when domainid=#{domainId} then 1 else 0 end)domains,
+        sum(case when orgcode=#{orgCode} then 1 else 0 end)orGs,
+        sum(case when orgcode=#{orgCode} and deptcode=#{deptCode} then 1 else 0 end)orgDs
+        from dic_prov_risk_target
+    </select>
+
+    <!-- 删除用户 -->
+    <delete id="deleteProvTargetById" parameterType="map">
+        delete from dic_prov_risk_target where
+        id in
+        <foreach collection="Ids" item = "id" open="(" separator="," close=")" index="index">
+            #{id}
+        </foreach>
+    </delete>
+
+
+</mapper>

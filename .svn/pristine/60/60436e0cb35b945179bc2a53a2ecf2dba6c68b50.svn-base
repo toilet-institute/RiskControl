@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jxlt.udic.riskcontrol.website.persistance.mapper.ProvRiskTargetMapper">
+    <resultMap id="prtInfoMap" type="com.jxlt.udic.riskcontrol.website.model.ProvRiskTarget">
+        <id  column="ID" property="id"/>
+        <result column="DOMAINID" property="domainid"/>
+        <result column="ITEMS" property="items"/>
+        <result column="FLOWS" property="flows"/>
+        <result column="LINKS" property="links"/>
+        <result column="TARGETS" property="targets"/>
+        <result column="TYPE" property="type"/>
+        <result column="RESPCODE" property="respcode"/>
+        <result column="DEPTCODE" property="deptcode"/>
+        <result column="ORGCODE" property="orgcode"/>
+        <result column="OPERATOR" property="operator"/>
+        <result column="STATE" property="state"/>
+    </resultMap>
+
+    <select id="queryProvRiskTargetBySql" resultMap="prtInfoMap" parameterType="map">
+        select
+        id,domainid,items,flows,links,targets,type,respcode,deptcode,orgcode
+        from dic_prov_risk_target where deptcode=#{deptCode} and orgcode=#{orgCode} limit #{currPage} , #{pageSize}
+    </select>
+
+</mapper>

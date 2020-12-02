@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jxlt.udic.riskcontrol.website.persistance.mapper.SysStaffMapper">
+
+    <resultMap type="com.jxlt.udic.model.SysStaff" id="traceinfoMap">
+        <id  column="id" property="id"></id>
+        <result  column="USERCODE" property="usercode" />
+        <result  column="DEPTCODE" property="deptcode" />
+        <result  column="ORGCODE" property="orgcode" />
+        <result  column="ROLEID" property="roleid" />
+        <result  column="ROLELEVEL" property="rolelevel" />
+        <result  column="USERNAME" property="username" />
+        <result  column="ISDUTY" property="isduty" />
+        <result  column="ORDERID" property="orderid" />
+        <result  column="CREATETIME" property="createtime" />
+        <result  column="OPERATOR" property="operator" />
+        <result  column="STATE" property="state" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+						 	T.id,
+						 	T.USERCODE,
+						 	T.DEPTCODE,
+						 	T.ORGCODE,
+						 	T.ROLEID,
+						 	T.ROLELEVEL,
+						 	T.USERNAME,
+						 	T.ISDUTY,
+						 	T.ORDERID,
+						 	T.CREATETIME,
+						 	T.OPERATOR,
+						 	T.STATE
+	</sql>
+    <sql id="whereClause" >
+        where 1=1
+        <if test="usercode != null and usercode !='' ">
+            AND T.USERCODE=#{usercode}
+        </if>
+    </sql>
+
+    <!-- 根据输入条件查询列表数据或详情数据 -->
+    <select id="queryList" resultMap="traceinfoMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_staff  T
+        <include refid="whereClause"/>
+        <if test="maxResults!=null">
+            limit #{maxResults}
+        </if>
+    </select>
+
+    <select id="queryListByOrg" resultMap="traceinfoMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_staff T where T.DEPTCODE=#{deptcode} and T.ORGCODE=#{orgcode} order by T.id
+    </select>
+
+    <select id="getMaxsort" resultType="java.lang.Integer" >
+		select coalesce(MAX(id),0) from sys_staff
+	</select>
+
+    <select id="getUserByUserCode" resultMap="traceinfoMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_staff T where T.USERCODE=#{usercode}
+    </select>
+
+    <select id="getUserByUserName" resultMap="traceinfoMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_staff T where T.USERNAME=#{username}
+    </select>
+
+    <update id="sysStaffEnable"  parameterType="Map">
+		UPDATE sys_staff SET STATE=#{state} WHERE id=#{id}
+	</update>
+
+    <select id="getListByIdList" resultMap="traceinfoMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_staff T
+        <if test="idList != null ">
+            WHERE T.id IN
+            <foreach collection="idList" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="queryIdListByDeptCodes" resultMap="traceinfoMap" parameterType="map">
+        select id, USERCODE from sys_staff where DEPTCODE in
+        <foreach collection="deptCodes" item="deptCode" open="(" close=")" separator=",">
+            #{deptcode}
+        </foreach>
+    </select>
+
+</mapper>

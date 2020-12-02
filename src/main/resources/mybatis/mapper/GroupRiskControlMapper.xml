@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jxlt.udic.riskcontrol.website.persistance.mapper.GroupRiskControlMapper">
+    <resultMap id="grcInfoMap" type="com.jxlt.udic.riskcontrol.website.model.GroupRiskControl">
+        <id  column="id" property="id"/>
+        <result column="TARGETID" property="targetid"/>
+        <result column="REMARK" property="remark"/>
+        <result column="ORDERID" property="orderid"/>
+        <result column="CREATETIME" property="createtime"/>
+        <result column="OPERATOR" property="operator"/>
+        <result column="STATE" property="state"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        T.id,
+        T.TARGETID,
+        T.REMARK,
+        T.ORDERID,
+        T.CREATETIME,
+        T.OPERATOR,
+        T.STATE
+    </sql>
+
+    <select id="queryListByOpe" resultMap="grcInfoMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from dic_group_risk_control T where T.OPERATOR=#{operator} and T.STATE=#{state} order by T.id
+    </select>
+
+    <select id="queryGroupRiskControlBySql" resultMap="grcInfoMap" parameterType="map">
+        select
+        *
+        from dic_group_risk_control limit #{currIndex} , #{pageSize}
+    </select>
+</mapper>

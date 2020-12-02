@@ -1,0 +1,48 @@
+package com.jxlt.udic.riskcontrol.website.controller;
+
+
+import com.jxlt.udic.riskcontrol.website.enums.ResponseResultCodeEnum;
+import com.jxlt.udic.riskcontrol.website.model.SysStaff;
+import com.jxlt.udic.riskcontrol.website.service.SysStaffService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import com.jxlt.udic.riskcontrol.website.model.RootResult;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+
+@Slf4j
+@RestController
+public class SsoLoginController {
+
+    @Autowired
+    private SysStaffService userservice;
+
+    @RequestMapping(value = "/SSOLogin")
+    public String SSOLogin(String usercode) {
+        RootResult<String> result = RootResult.error(ResponseResultCodeEnum.REQUEST_PARAMS_ERROR);
+        SysStaff sysuser = userservice.getUserByUserCode(usercode);
+        JSONObject retStr = new JSONObject();
+        retStr.put("usercode",sysuser.getUsercode());
+        log.info(retStr.toJSONString());
+        result.setData(retStr.toJSONString());
+
+        log.info(JSON.toJSONString(result));
+        return usercode;
+    }
+
+    @RequestMapping(value = "/getToken")
+    public String getToken(String loginname, String logincode) {
+        String token = "";
+        RootResult<String> result = new RootResult<>();
+        JSONObject retStr = new JSONObject();
+        retStr.put("code",loginname);
+        retStr.put("msg",logincode);
+        log.info(retStr.toJSONString());
+        result.setData(retStr.toJSONString());
+        log.info(JSON.toJSONString(result));
+        return token;
+    }
+
+}

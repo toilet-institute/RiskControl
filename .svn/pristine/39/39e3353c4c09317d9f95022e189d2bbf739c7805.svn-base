@@ -1,0 +1,44 @@
+package com.jxlt.udic.riskcontrol.website.model;
+
+import lombok.Data;
+
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+/**
+ * FlowsImage
+ *
+ * @author zhout26
+ * @version 1.0
+ * 2020/11/16 16:07
+ **/
+@Data
+@Table(name = "dic_files")
+public class File  implements java.io.Serializable{
+
+    public File(String id,String base64Text, String exName, String visitUrl) {
+        this.fileId=id;
+        this.base64Text = base64Text;
+        this.exName = exName;
+        this.visitUrl = visitUrl;
+    }
+
+    /**  文件id 用于访问*/
+    @Id
+    @Column(name="fileId")
+    private String fileId;
+    /**  base64 字符串 */
+    @Column(name="base64Text")
+    private String base64Text;
+    /**  文件拓展名 */
+    @Column(name="exName")
+    private String exName;
+    /**  访问路径 */
+    @Column(name="visitUrl")
+    private String visitUrl;
+
+
+    public File(){}
+
+}
