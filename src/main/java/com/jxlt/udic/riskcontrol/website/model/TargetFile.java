@@ -23,10 +23,14 @@ public class TargetFile {
     /**  文件id 用于访问*/
     @Column(name="fileId")
     private String fileId;
+
+    @Column(name="target")
+    private Integer target;
     public TargetFile(){}
 
-    public TargetFile(String target_id, String fileId) {
+    public TargetFile(String target_id, String fileId,int target) {
         this.target_id = target_id;
         this.fileId = fileId;
+        this.target=target;
     }
 }

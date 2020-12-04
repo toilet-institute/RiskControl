@@ -24,10 +24,10 @@ import java.util.Date;
 public class ProvRiskTarget implements java.io.Serializable{
         @Id
         @JSONField(name = "id")
-        private int id; //主键
+        private Integer id; //主键
         @Column(name="DOMAINID")
         @JSONField(name = "domainid")
-        private int domainid; //风险点ID
+        private Integer domainid; //风险点ID
         @Column(name="ITEMS")
         @JSONField(name = "items")
         private String items; //业务事项

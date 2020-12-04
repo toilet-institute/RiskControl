@@ -8,6 +8,7 @@ import com.jxlt.udic.riskcontrol.website.model.datachange.ProvRiskStatic;
 import com.jxlt.udic.riskcontrol.website.model.datachange.ProvRiskTo;
 import com.jxlt.udic.riskcontrol.website.service.*;
 
+import org.apache.commons.collections4.map.HashedMap;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @SpringBootTest
 class RiskcontrolApplicationTests {
@@ -73,6 +75,24 @@ class RiskcontrolApplicationTests {
     @Test
     void queryProvRiskTargetBySql(){
         List<ProvRiskTo> provRiskTos= provRiskTargetService.queryProvTargetByName("建设");
+        JSONArray array= JSONArray.parseArray(JSON.toJSONString(provRiskTos));
+        //String str=JSON.toJSONString(provRiskStatic);
+        JSONObject result = new JSONObject();
+        result.put("status",2000);
+        result.put("msg","成功");
+        result.put("array",array);
+//        result.put("data",str);
+        System.out.println(result.toJSONString());
+    }
+
+    @Test
+    void addProvTarget(){
+        int tar=provRiskTargetService.addProvTarget(11,"123","123","123","123","123","1231","123","123",1,1);
+        System.out.println("---------------"+tar+"---------------------");
+    }
+    @Test
+    void queryProvTargetByState(){
+        List<ProvRiskTo> provRiskTos= provRiskTargetService.queryProvTargetByState(1);
         JSONArray array= JSONArray.parseArray(JSON.toJSONString(provRiskTos));
         //String str=JSON.toJSONString(provRiskStatic);
         JSONObject result = new JSONObject();

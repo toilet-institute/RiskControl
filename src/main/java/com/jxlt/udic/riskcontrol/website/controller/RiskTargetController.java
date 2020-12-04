@@ -174,7 +174,7 @@ public class RiskTargetController {
         result.put("data",array);
         return result.toJSONString();
     }
-//    集团廉洁风险点新增
+    // 集团廉洁风险点新增
     @RequestMapping(value = "/addGroupTarget")
     public String addGroupTarget(@RequestParam int domainId,@RequestParam String items,@RequestParam String flows,@RequestParam String links,@RequestParam String targets,@RequestParam String type,@RequestParam String ranges,@RequestParam String respDeptCode,@RequestParam int state){
         JSONObject result = new JSONObject();
@@ -230,12 +230,12 @@ public class RiskTargetController {
 
 //    廉洁风险点流程图上传
     @RequestMapping(value = "uploadFlowImage",method = RequestMethod.POST)
-    public String uploadFlowImage(@RequestParam("flows") MultipartFile uploadFile,@RequestParam String target_id) throws IOException {
+    public String uploadFlowImage(@RequestParam("file") MultipartFile uploadFile,@RequestParam String target_id) throws IOException {
         BASE64Encoder base64Encoder =new BASE64Encoder();
         String base64EncoderImg = base64Encoder.encode(uploadFile.getBytes());
         String fileId=Long.toString(System.currentTimeMillis());
         File file1=new File(fileId,base64EncoderImg,uploadFile.getOriginalFilename(),"/common/flows?targetId="+target_id);
-        TargetFile targetFile=new TargetFile(target_id,fileId);
+        TargetFile targetFile=new TargetFile(target_id,fileId,1);
         targetFileService.insertSelective(targetFile);
         fileService.insertSelective(file1);
         JSONObject result = new JSONObject();
@@ -309,6 +309,25 @@ public class RiskTargetController {
         try{
             String target = data.getString("target");
             List<ProvRiskTo> provRiskTargets=provRiskTargetService.queryProvTargetByName(target);
+            JSONArray array= JSONArray.parseArray(JSON.toJSONString(provRiskTargets));
+            result.put("status",2000);
+            result.put("msg","成功");
+            result.put("total",provRiskTargets.size());
+            result.put("list",array);
+            return result.toJSONString();
+        }catch (Exception e){
+            result.put("status",1000);
+            result.put("msg","字段解析出错");
+            return result.toJSONString();
+        }
+    }
+
+    @RequestMapping(value = "/queryProvTargetByState",method = RequestMethod.POST)
+    public String queryProvTargetByState(@RequestBody JSONObject data){
+        JSONObject result=new JSONObject();
+        try{
+            int state = data.getInteger("state");
+            List<ProvRiskTo> provRiskTargets=provRiskTargetService.queryProvTargetByState(state);
             JSONArray array= JSONArray.parseArray(JSON.toJSONString(provRiskTargets));
             result.put("status",2000);
             result.put("msg","成功");
@@ -422,8 +441,10 @@ public class RiskTargetController {
         provRiskTarget.setOrgcode(orgCode);
         provRiskTarget.setState(state);
         provRiskTarget.setOperator(1);
-        provRiskTargetService.insertSelective(provRiskTarget);
+        int id=provRiskTargetService.addProvTarget(domainId,items,flows,links,targets,type,respCode,deptCode,orgCode,1,state);
+        System.out.println(provRiskTarget.getId());
         result.put("status",2000);
+        result.put("id",id);
         result.put("msg","成功");
         return result.toJSONString();
 //        try{
@@ -513,7 +534,7 @@ public class RiskTargetController {
         file1.setFileId(fileId);
         file1.setVisitUrl(file.getAbsolutePath());
         uploadFile.transferTo(file);
-        TargetFile targetFile=new TargetFile(target_id,fileId);
+        TargetFile targetFile=new TargetFile(target_id,fileId,2);
         targetFileService.insertSelective(targetFile);
         fileService.insertSelective(file1);
         JSONObject result = new JSONObject();

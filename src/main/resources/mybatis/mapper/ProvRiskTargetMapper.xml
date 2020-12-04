@@ -34,6 +34,11 @@
         <result column="STATE" property="state"/>
     </resultMap>
 
+    <!-- 插入数据:返回记录主键id值 -->
+    <insert id="addProvTarget" useGeneratedKeys="true" keyProperty="id"  keyColumn="id" parameterType="com.jxlt.udic.riskcontrol.website.model.ProvRiskTarget">
+        insert  into dic_prov_risk_target (domainid,items,flows,links,targets,type,respcode,deptcode,orgcode,operator,state) values (#{domainid},#{items},#{flows},#{links},#{targets},#{type},#{respcode},#{deptcode},#{orgcode},#{operator},#{state})
+    </insert>
+
     <resultMap id="prtInfoMap3" type="com.jxlt.udic.riskcontrol.website.model.datachange.ProvRiskStatic">
 
         <result column="domains" property="domains"/>
@@ -61,6 +66,13 @@
         from dic_prov_risk_target a
         join dic_group_important_domain b on a.domainid=b.id
         where a.targets like concat('%',#{targets},'%')
+    </select>
+
+    <select id="queryProvTargetByState" resultMap="prtInfoMap2" parameterType="map">
+        select a.id,a.domainid,b.remark,a.items,a.flows,a.links,a.targets,a.type,a.respcode,a.deptcode,a.orgcode
+        from dic_prov_risk_target a
+                 join dic_group_important_domain b on a.domainid=b.id
+        where a.state =#{targets}
     </select>
 
     <select id="queryProvRiskTargetAllBySql" resultMap="prtInfoMap2" parameterType="map">

@@ -6,5 +6,6 @@
     <resultMap id="idInfoMap" type="com.jxlt.udic.riskcontrol.website.model.TargetFile">
         <id  column="target_id" property="target_id"/>
         <result column="fileId" property="fileId"/>
+        <result column="target" property="target"/>
     </resultMap>
 </mapper>

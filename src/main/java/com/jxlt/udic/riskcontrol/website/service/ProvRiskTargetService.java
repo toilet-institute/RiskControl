@@ -38,6 +38,11 @@ public class ProvRiskTargetService extends AbstractCommonService<ProvRiskTarget>
         data.put("targets",target);
         return provRiskTargetMapper.queryProvTargetByName(data);
     }
+    public List<ProvRiskTo>  queryProvTargetByState(int state){
+        Map<String, Object> data = new HashedMap();
+        data.put("targets",state);
+        return provRiskTargetMapper.queryProvTargetByState(data);
+    }
     public List<ProvRiskTo> queryProvRiskTargetBySql(int currPage, int pageSize, List<String> deptCodes, List<String> orgCodes, String sort){
         Map<String, Object> data = new HashedMap();
         if(!deptCodes.isEmpty()&&!orgCodes.isEmpty()){
@@ -66,6 +71,23 @@ public class ProvRiskTargetService extends AbstractCommonService<ProvRiskTarget>
         Map<String, Object> data = new HashedMap();
         data.put("Ids",Ids);
         return provRiskTargetMapper.deleteProvTargetById(data);
+    }
+    public int addProvTarget(int domainid,String items,String flows,String links,String targets,String type,String rspcode,String deptcode,String orgcode,int operator,int state){
+        ProvRiskTarget provRiskTarget=new ProvRiskTarget();
+        provRiskTarget.setDomainid(domainid);
+        provRiskTarget.setFlows(flows);
+        provRiskTarget.setItems(items);
+        provRiskTarget.setLinks(links);
+        provRiskTarget.setTargets(targets);
+        provRiskTarget.setType(type);
+        provRiskTarget.setRespcode(rspcode);
+        provRiskTarget.setDeptcode(deptcode);
+        provRiskTarget.setOrgcode(orgcode);
+        provRiskTarget.setState(state);
+        provRiskTarget.setOperator(1);
+        provRiskTargetMapper.addProvTarget(provRiskTarget);
+        int num=provRiskTarget.getId();
+        return num;
     }
 
 }
