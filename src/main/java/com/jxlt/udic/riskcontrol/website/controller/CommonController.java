@@ -4,8 +4,10 @@ package com.jxlt.udic.riskcontrol.website.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.jxlt.udic.riskcontrol.website.model.File;
+import com.jxlt.udic.riskcontrol.website.model.ProvAutoRisk;
 import com.jxlt.udic.riskcontrol.website.model.TargetFile;
 import com.jxlt.udic.riskcontrol.website.service.FileService;
+import com.jxlt.udic.riskcontrol.website.service.ProvAutoRiskService;
 import com.jxlt.udic.riskcontrol.website.service.TargetFileService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.nio.file.Path;
+import java.util.Map;
 
 /**
  * @author: ajax
@@ -37,8 +40,55 @@ public class CommonController {
 
     @Autowired
     private TargetFileService targetFileService;
+    @Autowired
+    private ProvAutoRiskService provAutoRiskService;
 
     public static final String basePath="/root/zt/files";
+
+
+    @RequestMapping(value = "/addAutoRisk",method = RequestMethod.POST)
+    public String addAutoRisk(@RequestParam Integer autoRiskId,@RequestParam Integer temp_id,@RequestParam String type,@RequestParam String dataValue,@RequestParam String stat_date){
+        JSONObject result = new JSONObject();
+        JSONObject data = new JSONObject();
+        JSONObject value=JSON.parseObject(dataValue);
+        ProvAutoRisk provAutoRisk=new ProvAutoRisk(autoRiskId,temp_id,type,dataValue,stat_date);
+        provAutoRiskService.insertSelective(provAutoRisk);
+        for (Map.Entry entry : value.entrySet()){
+            data.put(entry.getKey().toString(),Warning(JSON.parseObject(entry.getValue().toString()),0.32));
+        }
+        result.put("status",2000);
+        result.put("msg","成功");
+        result.put("data",data);
+        return result.toJSONString();
+    }
+//
+//    @RequestMapping(value = "/warning",method = RequestMethod.POST)
+    public JSONObject Warning(JSONObject dataValue,Double rate){
+        JSONObject result=new JSONObject();
+        for (Map.Entry entry : dataValue.entrySet()){
+            String[] ls=entry.getValue().toString().split("\\|");
+            Double d=Double.parseDouble(ls[2]);
+            if(d>rate){
+                result.put(entry.getKey().toString(),"是");
+            }else{
+                result.put(entry.getKey().toString(),"否");
+            }
+        }
+        return result;
+    }
+    @RequestMapping(value = "/queryWarning",method = RequestMethod.POST)
+    public String ProvRiskWarning(@RequestParam Integer autoRiskId,@RequestParam String city,@RequestParam String stat_date){
+        JSONObject result=new JSONObject();
+        ProvAutoRisk provAutoRisk= provAutoRiskService.queryProvAutoRiskBySt(autoRiskId,stat_date);
+        JSONObject cityValue=JSON.parseObject(provAutoRisk.getDataValue()).getJSONObject(city);
+        JSONObject re=Warning(JSON.parseObject(provAutoRisk.getDataValue()),0.32);
+        result.put("result",re);
+        result.put(city,cityValue);
+        result.put("status",2000);
+        result.put("msg","成功");
+        return result.toJSONString();
+    }
+
 
     //流程图上传
     //接口：/common/flowsUpload:返回url

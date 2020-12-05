@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jxlt.udic.riskcontrol.website.persistance.mapper.ProvAutoRiskMapper">
+    <resultMap id="parInfoMap" type="com.jxlt.udic.riskcontrol.website.model.ProvAutoRisk">
+        <id  column="id" property="id"/>
+        <result column="targetId" property="targetId"/>
+        <result column="temp_id" property="temp_id"/>
+        <result column="type" property="type"/>
+        <result column="dataValue" property="dataValue"/>
+        <result column="stat_date" property="stat_date"/>
+    </resultMap>
+
+    <select id="queryProvAutoRiskBySt" resultMap="parInfoMap" parameterType="map">
+        select id,targetId,temp_id,type,dataValue,stat_date
+        from dic_prov_auto_temp_risk
+        where targetId=#{targetId} and stat_date=#{stat_date}
+        limit 1;
+    </select>
+</mapper>

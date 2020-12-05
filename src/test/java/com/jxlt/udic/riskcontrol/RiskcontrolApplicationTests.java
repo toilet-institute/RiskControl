@@ -35,8 +35,52 @@ class RiskcontrolApplicationTests {
     @Autowired
     ProvRiskControlService provRiskControlService;
 
+    @Autowired
+    ProvAutoRiskService provAutoRiskService;
 
-    @Test void getStaff(){
+    @Test
+    void autoRisk(){
+        ProvAutoRisk provAutoRisk=new ProvAutoRisk(1,1,"2","cb","202010");
+        provAutoRiskService.insertSelective(provAutoRisk);
+    }
+
+    public JSONObject Warning(JSONObject dataValue,Double rate){
+        JSONObject result=new JSONObject();
+        for (Map.Entry entry : dataValue.entrySet()){
+            String[] ls=entry.getValue().toString().split("\\|");
+            Double d=Double.parseDouble(ls[2]);
+            if(d>rate){
+                result.put(entry.getKey().toString(),"是");
+            }else{
+                result.put(entry.getKey().toString(),"否");
+            }
+        }
+        return result;
+    }
+    @Test
+    void queryProvAutoRiskBySt(){
+        JSONObject result=new JSONObject();
+        ProvAutoRisk provAutoRisk= provAutoRiskService.queryProvAutoRiskBySt(12,"202009");
+        JSONObject value=JSON.parseObject(provAutoRisk.getDataValue());
+        for (Map.Entry entry : value.entrySet()){
+            result.put(entry.getKey().toString(),Warning(JSON.parseObject(entry.getValue().toString()),0.32));
+        }
+//        for (Map.Entry entry : value.entrySet()) {
+//            String[] ls=entry.getValue().toString().split("\\|");
+//            System.out.println(Arrays.toString(ls));
+//            Double d=Double.parseDouble(ls[2]);
+//            if(d>0.32){
+//                result.put(entry.getKey().toString(),"是");
+//            }else{
+//                result.put(entry.getKey().toString(),"否");
+//            }
+//        }
+        System.out.println(result.toJSONString());
+    }
+
+
+    @Test
+    void getStaff(){
 //        SysStaff sysStaff= sysStaffService.getUserByUserName("1");
 //        System.out.println(sysStaff.toString());
         //ProvRiskStatic provRiskStatic = provRiskTargetService.queryProvRiskTargetCountBySql("1","1","1");
