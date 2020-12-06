@@ -23,4 +23,5 @@ public interface ProvRiskTargetMapper extends CommonMapper<ProvRiskTarget> {
      int deleteProvTargetById(Map<String,Object> data);
      int addProvTarget(ProvRiskTarget provRiskTarget);
      List<ProvRiskTo> queryProvTargetByState(Map<String,Object> data);
+     List<ProvRiskTo> queryProvTargetByIsAuto(Map<String,Object> data);
 }

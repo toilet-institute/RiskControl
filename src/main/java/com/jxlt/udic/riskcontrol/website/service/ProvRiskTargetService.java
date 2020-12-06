@@ -43,6 +43,13 @@ public class ProvRiskTargetService extends AbstractCommonService<ProvRiskTarget>
         data.put("targets",state);
         return provRiskTargetMapper.queryProvTargetByState(data);
     }
+
+    public List<ProvRiskTo>  queryProvTargetByIsAuto(int isauto){
+        Map<String, Object> data = new HashedMap();
+        data.put("isauto",isauto);
+        return provRiskTargetMapper.queryProvTargetByIsAuto(data);
+    }
+
     public List<ProvRiskTo> queryProvRiskTargetBySql(int currPage, int pageSize, List<String> deptCodes, List<String> orgCodes, String sort){
         Map<String, Object> data = new HashedMap();
         if(!deptCodes.isEmpty()&&!orgCodes.isEmpty()){

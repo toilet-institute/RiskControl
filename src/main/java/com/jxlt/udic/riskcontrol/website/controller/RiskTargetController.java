@@ -341,6 +341,26 @@ public class RiskTargetController {
         }
     }
 
+    // 根据风险点类型（自动，手动）筛选数据
+    @RequestMapping(value = "/queryProvTargetByIsAuto",method = RequestMethod.POST)
+    public String queryProvTargetByIsAuto(@RequestBody JSONObject data){
+        JSONObject result=new JSONObject();
+        try{
+            int isauto = data.getInteger("isauto");
+            List<ProvRiskTo> provRiskTargets=provRiskTargetService.queryProvTargetByIsAuto(isauto);
+            JSONArray array= JSONArray.parseArray(JSON.toJSONString(provRiskTargets));
+            result.put("status",2000);
+            result.put("msg","成功");
+            result.put("total",provRiskTargets.size());
+            result.put("list",array);
+            return result.toJSONString();
+        }catch (Exception e){
+            result.put("status",1000);
+            result.put("msg","字段解析出错");
+            return result.toJSONString();
+        }
+    }
+
 //    省分廉洁风险点信息查询
     @RequestMapping(value = "/queryProvTarget",method = RequestMethod.POST)
     public String queryProvTarget(@RequestBody JSONObject data){
