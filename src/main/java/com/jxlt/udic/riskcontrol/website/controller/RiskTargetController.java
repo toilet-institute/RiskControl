@@ -370,6 +370,7 @@ public class RiskTargetController {
             }
             String sort=currentData.getString("sort");
             List<ProvRiskTo> provRiskTargets=provRiskTargetService.queryProvRiskTargetBySql(pageNum,pageSize,deptArray,orgArray,sort);
+            System.out.println("provrisk is"+provRiskTargets);
             JSONArray array= JSONArray.parseArray(JSON.toJSONString(provRiskTargets));
             result.put("status",2000);
             result.put("msg","成功");
@@ -429,6 +430,7 @@ public class RiskTargetController {
         String deptCode=data.getString("deptCode");
         String orgCode=data.getString("orgCode");
         Integer state= data.getInteger("state");
+        Integer isauto =data.getInteger("isauto");
         ProvRiskTarget provRiskTarget=new ProvRiskTarget();
         provRiskTarget.setDomainid(domainId);
         provRiskTarget.setFlows(flows);
@@ -440,8 +442,9 @@ public class RiskTargetController {
         provRiskTarget.setDeptcode(deptCode);
         provRiskTarget.setOrgcode(orgCode);
         provRiskTarget.setState(state);
+        provRiskTarget.setIsauto(isauto);
         provRiskTarget.setOperator(1);
-        int id=provRiskTargetService.addProvTarget(domainId,items,flows,links,targets,type,respCode,deptCode,orgCode,1,state);
+        int id=provRiskTargetService.addProvTarget(domainId,items,flows,links,targets,type,respCode,deptCode,orgCode,1,state,isauto);
         System.out.println(provRiskTarget.getId());
         result.put("status",2000);
         result.put("id",id);

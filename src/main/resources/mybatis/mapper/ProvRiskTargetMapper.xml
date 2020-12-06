@@ -32,11 +32,13 @@
         <result column="ORGCODE" property="orgcode"/>
         <result column="OPERATOR" property="operator"/>
         <result column="STATE" property="state"/>
+        <result column="ISAUTO" property="isauto"/>
     </resultMap>
 
     <!-- 插入数据:返回记录主键id值 -->
     <insert id="addProvTarget" useGeneratedKeys="true" keyProperty="id"  keyColumn="id" parameterType="com.jxlt.udic.riskcontrol.website.model.ProvRiskTarget">
-        insert  into dic_prov_risk_target (domainid,items,flows,links,targets,type,respcode,deptcode,orgcode,operator,state) values (#{domainid},#{items},#{flows},#{links},#{targets},#{type},#{respcode},#{deptcode},#{orgcode},#{operator},#{state})
+        insert  into dic_prov_risk_target (domainid,items,flows,links,targets,type,respcode,deptcode,orgcode,operator,state,isauto) values
+        (#{domainid},#{items},#{flows},#{links},#{targets},#{type},#{respcode},#{deptcode},#{orgcode},#{operator},#{state},#{isauto})
     </insert>
 
     <resultMap id="prtInfoMap3" type="com.jxlt.udic.riskcontrol.website.model.datachange.ProvRiskStatic">
@@ -47,7 +49,7 @@
     </resultMap>
 
     <select id="queryProvRiskTargetBySql" resultMap="prtInfoMap2" parameterType="map">
-        select a.id,a.domainid,b.remark,a.items,a.flows,a.links,a.targets,a.type,a.respcode,a.deptcode,a.orgcode
+        select a.id,a.domainid,b.remark,a.items,a.flows,a.links,a.targets,a.type,a.respcode,a.deptcode,a.orgcode,a.isauto,a.state
         from dic_prov_risk_target a
         join dic_group_important_domain b on a.domainid=b.id
         where deptcode in

@@ -58,4 +58,6 @@ public class ProvRiskTarget implements java.io.Serializable{
         private Integer operator; //操作人
         @Column(name="STATE")
         private Integer state; //状态
+        @Column(name="ISAUTO")
+        private Integer isauto;
 }

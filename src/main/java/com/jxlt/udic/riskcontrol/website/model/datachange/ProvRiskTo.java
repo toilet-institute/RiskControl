@@ -35,4 +35,8 @@ public class ProvRiskTo {
 
     private String orgcode;//责任公司
 
+    private int isauto;//是否自动风险点
+
+    private int state;//风险点状态
+
 }

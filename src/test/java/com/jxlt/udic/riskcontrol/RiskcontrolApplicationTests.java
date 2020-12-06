@@ -129,11 +129,11 @@ class RiskcontrolApplicationTests {
         System.out.println(result.toJSONString());
     }
 
-    @Test
-    void addProvTarget(){
-        int tar=provRiskTargetService.addProvTarget(11,"123","123","123","123","123","1231","123","123",1,1);
-        System.out.println("---------------"+tar+"---------------------");
-    }
+//    @Test
+//    void addProvTarget(){
+//        int tar=provRiskTargetService.addProvTarget(11,"123","123","123","123","123","1231","123","123",1,1);
+//        System.out.println("---------------"+tar+"---------------------");
+//    }
     @Test
     void queryProvTargetByState(){
         List<ProvRiskTo> provRiskTos= provRiskTargetService.queryProvTargetByState(1);
