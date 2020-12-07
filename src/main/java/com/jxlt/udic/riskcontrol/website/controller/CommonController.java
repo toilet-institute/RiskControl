@@ -9,6 +9,7 @@ import com.jxlt.udic.riskcontrol.website.model.TargetFile;
 import com.jxlt.udic.riskcontrol.website.service.FileService;
 import com.jxlt.udic.riskcontrol.website.service.ProvAutoRiskService;
 import com.jxlt.udic.riskcontrol.website.service.TargetFileService;
+import com.jxlt.udic.riskcontrol.website.util.SendMailUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -47,7 +48,7 @@ public class CommonController {
 
 
     @RequestMapping(value = "/addAutoRisk",method = RequestMethod.POST)
-    public String addAutoRisk(@RequestParam Integer autoRiskId,@RequestParam Integer temp_id,@RequestParam String type,@RequestParam String dataValue,@RequestParam String stat_date){
+    public String addAutoRisk(@RequestParam Integer autoRiskId,@RequestParam Integer temp_id,@RequestParam String type,@RequestParam String dataValue,@RequestParam String stat_date) throws Exception {
         JSONObject result = new JSONObject();
         JSONObject data = new JSONObject();
         JSONObject value=JSON.parseObject(dataValue);
@@ -63,13 +64,15 @@ public class CommonController {
     }
 //
 //    @RequestMapping(value = "/warning",method = RequestMethod.POST)
-    public JSONObject Warning(JSONObject dataValue,Double rate){
+    public JSONObject Warning(JSONObject dataValue,Double rate) throws Exception {
         JSONObject result=new JSONObject();
         for (Map.Entry entry : dataValue.entrySet()){
             String[] ls=entry.getValue().toString().split("\\|");
             Double d=Double.parseDouble(ls[2]);
             if(d>rate){
                 result.put(entry.getKey().toString(),"是");
+                SendMailUtil sendMailUtil=new SendMailUtil();
+                sendMailUtil.sendMail("三无极低预警",entry.getKey().toString()+"三无极低指标过高,请及时处理","zouyj19@chinaunicom.cn");
             }else{
                 result.put(entry.getKey().toString(),"否");
             }
@@ -77,7 +80,7 @@ public class CommonController {
         return result;
     }
     @RequestMapping(value = "/queryWarning",method = RequestMethod.POST)
-    public String ProvRiskWarning(@RequestParam Integer autoRiskId,@RequestParam String city,@RequestParam String stat_date){
+    public String ProvRiskWarning(@RequestParam Integer autoRiskId,@RequestParam String city,@RequestParam String stat_date) throws Exception {
         JSONObject result=new JSONObject();
         ProvAutoRisk provAutoRisk= provAutoRiskService.queryProvAutoRiskBySt(autoRiskId,stat_date);
         JSONObject cityValue=JSON.parseObject(provAutoRisk.getDataValue()).getJSONObject(city);
