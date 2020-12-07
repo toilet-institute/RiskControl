@@ -43,6 +43,13 @@ public class ProvRiskTargetService extends AbstractCommonService<ProvRiskTarget>
         data.put("targets",state);
         return provRiskTargetMapper.queryProvTargetByState(data);
     }
+
+    public List<ProvRiskTo>  queryProvTargetByIsAuto(int isauto){
+        Map<String, Object> data = new HashedMap();
+        data.put("isauto",isauto);
+        return provRiskTargetMapper.queryProvTargetByIsAuto(data);
+    }
+
     public List<ProvRiskTo> queryProvRiskTargetBySql(int currPage, int pageSize, List<String> deptCodes, List<String> orgCodes, String sort){
         Map<String, Object> data = new HashedMap();
         if(!deptCodes.isEmpty()&&!orgCodes.isEmpty()){
@@ -72,7 +79,7 @@ public class ProvRiskTargetService extends AbstractCommonService<ProvRiskTarget>
         data.put("Ids",Ids);
         return provRiskTargetMapper.deleteProvTargetById(data);
     }
-    public int addProvTarget(int domainid,String items,String flows,String links,String targets,String type,String rspcode,String deptcode,String orgcode,int operator,int state){
+    public int addProvTarget(int domainid,String items,String flows,String links,String targets,String type,String rspcode,String deptcode,String orgcode,int operator,int state,int isauto){
         ProvRiskTarget provRiskTarget=new ProvRiskTarget();
         provRiskTarget.setDomainid(domainid);
         provRiskTarget.setFlows(flows);
@@ -85,6 +92,7 @@ public class ProvRiskTargetService extends AbstractCommonService<ProvRiskTarget>
         provRiskTarget.setOrgcode(orgcode);
         provRiskTarget.setState(state);
         provRiskTarget.setOperator(1);
+        provRiskTarget.setIsauto(isauto);
         provRiskTargetMapper.addProvTarget(provRiskTarget);
         int num=provRiskTarget.getId();
         return num;

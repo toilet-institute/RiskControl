@@ -341,6 +341,26 @@ public class RiskTargetController {
         }
     }
 
+    // 根据风险点类型（自动，手动）筛选数据
+    @RequestMapping(value = "/queryProvTargetByIsAuto",method = RequestMethod.POST)
+    public String queryProvTargetByIsAuto(@RequestBody JSONObject data){
+        JSONObject result=new JSONObject();
+        try{
+            int isauto = data.getInteger("isauto");
+            List<ProvRiskTo> provRiskTargets=provRiskTargetService.queryProvTargetByIsAuto(isauto);
+            JSONArray array= JSONArray.parseArray(JSON.toJSONString(provRiskTargets));
+            result.put("status",2000);
+            result.put("msg","成功");
+            result.put("total",provRiskTargets.size());
+            result.put("list",array);
+            return result.toJSONString();
+        }catch (Exception e){
+            result.put("status",1000);
+            result.put("msg","字段解析出错");
+            return result.toJSONString();
+        }
+    }
+
 //    省分廉洁风险点信息查询
     @RequestMapping(value = "/queryProvTarget",method = RequestMethod.POST)
     public String queryProvTarget(@RequestBody JSONObject data){
@@ -370,6 +390,7 @@ public class RiskTargetController {
             }
             String sort=currentData.getString("sort");
             List<ProvRiskTo> provRiskTargets=provRiskTargetService.queryProvRiskTargetBySql(pageNum,pageSize,deptArray,orgArray,sort);
+            System.out.println("provrisk is"+provRiskTargets);
             JSONArray array= JSONArray.parseArray(JSON.toJSONString(provRiskTargets));
             result.put("status",2000);
             result.put("msg","成功");
@@ -429,6 +450,7 @@ public class RiskTargetController {
         String deptCode=data.getString("deptCode");
         String orgCode=data.getString("orgCode");
         Integer state= data.getInteger("state");
+        Integer isauto =data.getInteger("isauto");
         ProvRiskTarget provRiskTarget=new ProvRiskTarget();
         provRiskTarget.setDomainid(domainId);
         provRiskTarget.setFlows(flows);
@@ -440,8 +462,9 @@ public class RiskTargetController {
         provRiskTarget.setDeptcode(deptCode);
         provRiskTarget.setOrgcode(orgCode);
         provRiskTarget.setState(state);
+        provRiskTarget.setIsauto(isauto);
         provRiskTarget.setOperator(1);
-        int id=provRiskTargetService.addProvTarget(domainId,items,flows,links,targets,type,respCode,deptCode,orgCode,1,state);
+        int id=provRiskTargetService.addProvTarget(domainId,items,flows,links,targets,type,respCode,deptCode,orgCode,1,state,isauto);
         System.out.println(provRiskTarget.getId());
         result.put("status",2000);
         result.put("id",id);
