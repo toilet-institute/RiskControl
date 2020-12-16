@@ -38,9 +38,9 @@ spring:
 #  datasource:
 #    jndi-name: riskdb2
 #    type: com.alibaba.druid.pool.DruidDataSource
-#    url: jdbc:mysql://120.53.29.69:3306/riskcontrol?serverTimezone=UTC&characterEncoding=UTF-8&useUnicode=true
+#    url: jdbc:mysql://106.52.162.201:3306/riskcontrol?serverTimezone=UTC&characterEncoding=UTF-8&useUnicode=true
 #    username: root
-#    password: '!Good1687'
+#    password: 'ajax123456'
 #    driver-class-name: com.mysql.cj.jdbc.Driver
     
     #druid连接池参数

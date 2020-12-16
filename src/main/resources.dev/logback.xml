@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <property name="LOG_HOME" value="/Users/zouyujie/Documents/CodeSpace/log"/>
+    <property name="LOG_HOME" value="/Users/mac/Documents/Log"/>
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
     <!-- 控制器输出地 -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
